@@ -1,6 +1,15 @@
-const UserTakeAlert = () =>
-    <div className="">
-        <div id="alert" className="w-3/12 ml-4 bg-white py-4 md:py-0 dark:bg-gray-800 shadow rounded flex flex-col items-center md:flex-row  justify-between">
+import { FC } from "react";
+
+interface UserTakeAlertProps {
+    Id?: string;
+    PeopleName?: string;
+    Quantity?: number;
+    Timestamp: number;
+}
+
+const UserTakeAlert: FC<UserTakeAlertProps> = ({ PeopleName, Quantity, Timestamp }) =>
+    <div>
+        <div id="alert" className="w-3/12 ml-4 bg-white py-4 md:py-0 dark:bg-gray-800 shadow rounded flex flex-col items-center md:flex-row  justify-between relative">
             <div className="flex flex-col items-center md:flex-row">
                 <div className="mr-3 p-4 bg-green-400  rounded md:rounded-tr-none md:rounded-br-none text-white">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={22} height={22} fill="currentColor">
@@ -9,13 +18,12 @@ const UserTakeAlert = () =>
                 </div>
                 <p className="mr-2 text-base font-bold text-gray-800 dark:text-gray-100 mt-2 md:my-0">Success</p>
                 <div className="h-1 w-1 bg-gray-300 dark:bg-gray-700 rounded-full mr-2 hidden xl:block" />
-                <p className="text-sm lg:text-base dark:text-gray-400 text-gray-600 lg:pt-1 xl:pt-0 sm:mb-0 mb-2 text-center sm:text-left">Zi Hao has taken 2</p>
+                <p className="text-sm lg:text-base dark:text-gray-400 text-gray-600 sm:mb-0 mb-2 text-center sm:text-left">{PeopleName} has taken {Quantity}</p>
             </div>
-            <div className="flex xl:items-center lg:items-center sm:justify-end justify-center pr-4 ">
-                <span className="text-sm mr-4 font-bold cursor-pointer text-indigo-700 dark:text-indigo-600">Details</span>
-                <span className="text-sm cursor-pointer text-gray-600 dark:text-gray-400">
-                    Dismiss
-                </span>
+            <div className="border border-gray-300 dark:border-gray-700 h-8 w-24 mb-4 md:mb-0 rounded-md flex items-center justify-center">
+                <div className="flex items-center">
+                    <span className="text-xs text-gray-800 dark:text-gray-100 font-normal">{Timestamp ? new Date(Timestamp).toLocaleString() : ""}</span>
+                </div>
             </div>
         </div>
     </div>

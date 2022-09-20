@@ -1,6 +1,16 @@
-const SliderCard = () =>
-    <div className="rounded-lg overflow-hidden bg-opacity-90 bg-gray-900">
-        <img src="/zi_hao.jpeg" className="object-cover" alt="zihao" />
+import { FC } from 'react';
+
+
+interface SliderCardProps {
+    Id: string;
+    PeopleName: string;
+    FileKey: string;
+    Quantity: number;
+}
+
+const SliderCard: FC<SliderCardProps> = ({ FileKey, Quantity, PeopleName }) =>
+    <div className="rounded-lg overflow-hidden w-56 bg-opacity-90 bg-gray-900">
+        <img src={`https://d121x775m9die3.cloudfront.net/${FileKey}`} className="object-cover w-full" alt="zihao" />
         <div className="bg-gray-300 shadow p-3 flex items-center justify-center">
             {/* <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-discount" width={32} height={32} viewBox="0 0 24 24" strokeWidth="1.5" stroke="#fff" fill="none" strokeLinecap="round" strokeLinejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" />
@@ -10,7 +20,7 @@ const SliderCard = () =>
                     <path d="M5 7.2a2.2 2.2 0 0 1 2.2 -2.2h1a2.2 2.2 0 0 0 1.55 -.64l.7 -.7a2.2 2.2 0 0 1 3.12 0l.7 .7a2.2 2.2 0 0 0 1.55 .64h1a2.2 2.2 0 0 1 2.2 2.2v1a2.2 2.2 0 0 0 .64 1.55l.7 .7a2.2 2.2 0 0 1 0 3.12l-.7 .7a2.2 2.2 0 0 0 -.64 1.55 v1a2.2 2.2 0 0 1 -2.2 2.2h-1a2.2 2.2 0 0 0 -1.55 .64l-.7 .7a2.2 2.2 0 0 1 -3.12 0l-.7 -.7a2.2 2.2 0 0 0 -1.55 -.64h-1a2.2 2.2 0 0 1 -2.2 -2.2v-1a2.2 2.2 0 0 0 -.64 -1.55l-.7 -.7a2.2 2.2 0 0 1 0 -3.12l.7 -.7a2.2 2.2 0 0 0 .64 -1.55 v-1" />
                 </svg> */}
             <img src="/nasi_lemak.png" className="w-8" alt="nasi lemak" />
-            <h3 className="mb-1 leading-5 text-gray-800 text-xs font-semibold">1</h3>
+            <h3 className="mb-1 leading-5 text-gray-800 text-xs font-semibold">{PeopleName} Taken {Quantity}</h3>
             <p className="text-gray-600 text-sm tracking-normal font-normal leading-5"></p>
         </div>
     </div>
