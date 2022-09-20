@@ -32,7 +32,7 @@ interface Message {
 
 const Home: NextPage = () => {
   const items = Array(100).fill(0);
-  const [socketUrl, setSocketUrl] = useState('ws://54.151.194.63/initiate');
+  const [socketUrl, setSocketUrl] = useState('wss://ws.serverlessgo.myawsworld.com/initiate');
   const [aggregateData, setAggregateData] = useState<AggregateMessagePayload[]>([]);
   const [singleData, setSingleData] = useState<SingleMessagePayload>();
   const [previousSingleData, setPreviousSingleData] = useState<SingleMessagePayload>();
@@ -43,6 +43,7 @@ const Home: NextPage = () => {
   useEffect(() => {
     if (lastMessage !== null) {
       const data: Message = JSON.parse(lastMessage.data);
+      console.log(data)
       const { type, payload } = data;
       switch (type) {
         case "single":
@@ -78,16 +79,16 @@ const Home: NextPage = () => {
               </div>
               <div className="mt-96 ml-44 pb-4 relative">
 
-                <div className="w-72 h-40 bg-white flex justify-center items-center border-2 border-black transform transition-all absolute rounded-lg">
+                <div className="w-72 h-52 bg-white flex justify-center items-center border-2 border-black transform transition-all absolute rounded-lg">
                   <UserDetectionCard FileKey={previousSingleData?.FileKey} />
 
                 </div>
-                <div className="w-72 h-40 bg-white flex justify-center items-center border-2 border-black transform transition-all absolute left-20 rounded-lg">
+                <div className={`w-72 h-52 bg-white flex justify-center items-center border-2 border-black transform transition-all absolute left-20 rounded-lg ${!singleData?.FileKey && "animate-pulse"}`}>
                   <UserDetectionCard FileKey={singleData?.FileKey} />
                 </div>
               </div>
               <div className="pr-64 pt-52">
-                <UserTakeAlert />
+                <UserTakeAlert PeopleName={singleData?.PeopleName} Quantity={singleData?.Quantity} />
               </div>
             </div>
 
