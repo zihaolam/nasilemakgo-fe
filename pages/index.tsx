@@ -13,6 +13,7 @@ interface SingleMessagePayload {
   Quantity: number;
   Action: string;
   PeopleName: string;
+  Timestamp: number;
 }
 
 interface AggregateMessagePayload {
@@ -27,7 +28,7 @@ type MessageType = "single" | "aggregate"
 
 interface Message {
   type: MessageType;
-  payload: SingleMessagePayload | AggregateMessagePayload
+  payload: SingleMessagePayload & AggregateMessagePayload
 }
 
 const Home: NextPage = () => {
@@ -79,7 +80,7 @@ const Home: NextPage = () => {
               </div>
               <div className="mt-96 ml-44 pb-4 relative">
 
-                <div className="w-72 h-52 bg-white flex justify-center items-center border-2 border-black transform transition-all absolute rounded-lg">
+                <div className={`w-72 h-52 bg-white flex justify-center items-center border-2 border-black transform transition-all absolute rounded-lg ${!previousSingleData?.FileKey && "animate-pulse"}`}>
                   <UserDetectionCard FileKey={previousSingleData?.FileKey} />
 
                 </div>
@@ -88,7 +89,7 @@ const Home: NextPage = () => {
                 </div>
               </div>
               <div className="pr-64 pt-52">
-                <UserTakeAlert PeopleName={singleData?.PeopleName} Quantity={singleData?.Quantity} />
+                <UserTakeAlert Timestamp={singleData?.Timestamp!} PeopleName={singleData?.PeopleName} Quantity={singleData?.Quantity} />
               </div>
             </div>
 
