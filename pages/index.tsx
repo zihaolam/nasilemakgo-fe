@@ -6,6 +6,7 @@ import UserDetectionCard from '../components/UserDectectionCard'
 import UserTakeAlert from '../components/UserTakeAlert'
 import { useState, useCallback, useEffect } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
+import axios from 'axios';
 
 interface SingleMessagePayload {
   Id: string;
@@ -36,25 +37,46 @@ const Home: NextPage = () => {
   const [socketUrl, setSocketUrl] = useState('wss://ws.serverlessgo.myawsworld.com/initiate');
   const [aggregateData, setAggregateData] = useState<AggregateMessagePayload[]>([]);
   const [singleData, setSingleData] = useState<SingleMessagePayload>();
-  const [previousSingleData, setPreviousSingleData] = useState<SingleMessagePayload>();
 
-  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl, { reconnectAttempts: 5, reconnectInterval: 5 });
   //https://d121x775m9die3.cloudfront.net/${FileKey}
 
   useEffect(() => {
     if (lastMessage !== null) {
       const data: Message = JSON.parse(lastMessage.data);
-      console.log(data)
       const { type, payload } = data;
       switch (type) {
         case "single":
           return setSingleData(payload);
         case "aggregate":
-          return setAggregateData(prev => [...prev, payload])
+          return setAggregateData(prevAggregate => {
+            if (prevAggregate.find(entry => entry.Id === payload.Id))
+              return prevAggregate.map(entry => entry.Id === payload.Id ? payload : entry);
+            return [...prevAggregate, payload];
+          })
       }
     }
 
   }, [lastMessage]);
+
+  useEffect(() => {
+    const focusHandler = () => {
+      if (readyState !== ReadyState.OPEN && readyState !== ReadyState.CONNECTING)
+        console.log('fuck')
+    }
+    window.addEventListener("focus", focusHandler)
+
+    return () => window.removeEventListener("focus", focusHandler);
+  }, [readyState])
+
+
+  useEffect(() => {
+    fetch("https://edlpdsg48a.execute-api.ap-southeast-1.amazonaws.com/prod/aggregate?limit=10")
+      .then(response => response.json())
+      .then(data => setAggregateData(data.Items));
+    // axios.get("https://edlpdsg48a.execute-api.ap-southeast-1.amazonaws.com/prod/aggregate?limit=10")
+    //   .then(data => console.log(data))
+  }, [])
 
   return (
     <div>
@@ -75,21 +97,23 @@ const Home: NextPage = () => {
               {/* 2. */}
               <div className="w-[200%] flex items-center justify-around gap-x-5 absolute left-0 animate">
                 {/* 3 */}
-                {Array(10).slice(0, 10).fill(0).map((item, key) => <SliderCard key={key} />)}
-                {Array(10).slice(0, 10).fill(0).map((item, key) => <SliderCard key={key} />)}
+                {aggregateData.map((item) => <SliderCard {...item} key={item.Id} />)}
+                {aggregateData.map((item) => <SliderCard {...item} key={item.Id} />)}
               </div>
               <div className="mt-96 ml-44 pb-4 relative">
 
-                <div className={`w-72 h-52 bg-white flex justify-center items-center border-2 border-black transform transition-all absolute rounded-lg ${!previousSingleData?.FileKey && "animate-pulse"}`}>
+                {/* <div className={`w-72 h-52 bg-white flex justify-center items-center border-2 border-black transform transition-all absolute rounded-lg ${!previousSingleData?.FileKey && "animate-pulse"}`}>
                   <UserDetectionCard FileKey={previousSingleData?.FileKey} />
 
-                </div>
-                <div className={`w-72 h-52 bg-white flex justify-center items-center border-2 border-black transform transition-all absolute left-20 rounded-lg ${!singleData?.FileKey && "animate-pulse"}`}>
-                  <UserDetectionCard FileKey={singleData?.FileKey} />
-                </div>
+                </div> */}
+                {singleData &&
+                  <div className={`w-72 h-52 bg-white flex justify-center items-center border-2 border-black transform transition-all absolute left-20 rounded-lg ${!singleData?.FileKey && "animate-pulse"}`}>
+                    <UserDetectionCard FileKey={singleData?.FileKey} />
+                  </div>
+                }
               </div>
               <div className="pr-64 pt-52">
-                <UserTakeAlert Timestamp={singleData?.Timestamp!} PeopleName={singleData?.PeopleName} Quantity={singleData?.Quantity} />
+                {singleData && <UserTakeAlert Timestamp={singleData?.Timestamp!} PeopleName={singleData?.PeopleName} Quantity={singleData?.Quantity} />}
               </div>
             </div>
 

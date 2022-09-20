@@ -18,11 +18,12 @@ const UserTakeAlert: FC<UserTakeAlertProps> = ({ PeopleName, Quantity, Timestamp
                 </div>
                 <p className="mr-2 text-base font-bold text-gray-800 dark:text-gray-100 mt-2 md:my-0">Success</p>
                 <div className="h-1 w-1 bg-gray-300 dark:bg-gray-700 rounded-full mr-2 hidden xl:block" />
-                <p className="text-sm lg:text-base dark:text-gray-400 text-gray-600 lg:pt-1 xl:pt-0 sm:mb-0 mb-2 text-center sm:text-left">{PeopleName} has taken {Quantity} !</p>
-                <span className="absolute right-3 bottom-3">{Timestamp ? new Date(Timestamp).toLocaleString(): ""}</span>
+                <p className="text-sm lg:text-base dark:text-gray-400 text-gray-600 sm:mb-0 mb-2 text-center sm:text-left">{PeopleName} has taken {Quantity}</p>
             </div>
-            <div className="flex xl:items-center lg:items-center sm:justify-end justify-center pr-4 ">
-
+            <div className="border border-gray-300 dark:border-gray-700 h-8 w-24 mb-4 md:mb-0 rounded-md flex items-center justify-center">
+                <div className="flex items-center">
+                    <span className="text-xs text-gray-800 dark:text-gray-100 font-normal">{Timestamp ? new Date(Timestamp).toLocaleString() : ""}</span>
+                </div>
             </div>
         </div>
     </div>
