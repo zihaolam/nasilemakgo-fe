@@ -1,12 +1,12 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Link from 'next/link'
-import SliderCard from '../components/SliderCard'
-import UserDetectionCard from '../components/UserDectectionCard'
-import UserTakeAlert from '../components/UserTakeAlert'
-import { useState, useCallback, useEffect } from 'react';
-import useWebSocket, { ReadyState } from 'react-use-websocket';
-import axios from 'axios';
+/* eslint-disable @next/next/no-img-element */
+import type { NextPage } from "next";
+import Head from "next/head";
+import SliderCard from "../components/SliderCard";
+import UserDetectionCard from "../components/UserDectectionCard";
+import UserTakeAlert from "../components/UserTakeAlert";
+import { useState, useEffect } from "react";
+import useWebSocket, { ReadyState } from "react-use-websocket";
+import Loader from "../components/SliderCard/Loader";
 
 interface SingleMessagePayload {
   Id: string;
@@ -25,20 +25,26 @@ interface AggregateMessagePayload {
   PeopleName: string;
 }
 
-type MessageType = "single" | "aggregate"
+type MessageType = "single" | "aggregate";
 
 interface Message {
   type: MessageType;
-  payload: SingleMessagePayload & AggregateMessagePayload
+  payload: SingleMessagePayload & AggregateMessagePayload;
 }
 
 const Home: NextPage = () => {
-  const items = Array(100).fill(0);
-  const [socketUrl, setSocketUrl] = useState('wss://ws.serverlessgo.myawsworld.com/initiate');
-  const [aggregateData, setAggregateData] = useState<AggregateMessagePayload[]>([]);
+  const [socketUrl, setSocketUrl] = useState(
+    "wss://ws.serverlessgo.myawsworld.com/initiate"
+  );
+  const [aggregateData, setAggregateData] = useState<AggregateMessagePayload[]>(
+    []
+  );
   const [singleData, setSingleData] = useState<SingleMessagePayload>();
 
-  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl, { reconnectAttempts: 5, reconnectInterval: 5 });
+  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl, {
+    reconnectAttempts: 5,
+    reconnectInterval: 5,
+  });
   //https://d121x775m9die3.cloudfront.net/${FileKey}
 
   useEffect(() => {
@@ -49,34 +55,36 @@ const Home: NextPage = () => {
         case "single":
           return setSingleData(payload);
         case "aggregate":
-          return setAggregateData(prevAggregate => {
-            if (prevAggregate.find(entry => entry.Id === payload.Id))
-              return prevAggregate.map(entry => entry.Id === payload.Id ? payload : entry);
+          return setAggregateData((prevAggregate) => {
+            if (prevAggregate.find((entry) => entry.Id === payload.Id))
+              return prevAggregate.map((entry) =>
+                entry.Id === payload.Id ? payload : entry
+              );
             return [...prevAggregate, payload];
-          })
+          });
       }
     }
-
   }, [lastMessage]);
 
+  // useEffect(() => {
+  //   const focusHandler = () => {
+  //     if (readyState !== ReadyState.OPEN && readyState !== ReadyState.CONNECTING)
+  //       console.log('fuck')
+  //   }
+  //   window.addEventListener("focus", focusHandler)
+
+  //   return () => window.removeEventListener("focus", focusHandler);
+  // }, [readyState])
+
   useEffect(() => {
-    const focusHandler = () => {
-      if (readyState !== ReadyState.OPEN && readyState !== ReadyState.CONNECTING)
-        console.log('fuck')
-    }
-    window.addEventListener("focus", focusHandler)
-
-    return () => window.removeEventListener("focus", focusHandler);
-  }, [readyState])
-
-
-  useEffect(() => {
-    fetch("https://edlpdsg48a.execute-api.ap-southeast-1.amazonaws.com/prod/aggregate?limit=10")
-      .then(response => response.json())
-      .then(data => setAggregateData(data.Items));
-    // axios.get("https://edlpdsg48a.execute-api.ap-southeast-1.amazonaws.com/prod/aggregate?limit=10")
-    //   .then(data => console.log(data))
-  }, [])
+    fetch(
+      "https://edlpdsg48a.execute-api.ap-southeast-1.amazonaws.com/prod/aggregate?limit=10"
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setAggregateData(data.Items);
+      });
+  }, []);
 
   return (
     <div>
@@ -88,40 +96,74 @@ const Home: NextPage = () => {
 
       <div className="overflow-y-hidden h-screen relative">
         <div className="flex flex-col justify-center md:flex md:justify-start">
-
-          <img className=" hidden md:block h-screen w-screen absolute top-0 left-0 object-cover object-right" src="/nasilemakhd2_edited_min.jpeg" alt="santa" />
-          <img className=" md:hidden w-full " src="https://tuk-cdn.s3.amazonaws.com/can-uploader/hero_8_img-2.png" alt="santa" />
+          <img
+            className=" hidden md:block h-screen w-screen absolute top-0 left-0 object-cover object-right"
+            src="/nasilemakhd2_edited_min.jpeg"
+            alt="santa"
+          />
+          <img
+            className=" md:hidden w-full "
+            src="https://tuk-cdn.s3.amazonaws.com/can-uploader/hero_8_img-2.png"
+            alt="santa"
+          />
           <div className="flex flex-col bg-gray-900 bg-opacity-50 mt-4 w-screen overflow-hidden">
-
             <div className="w-[200%] h-screen overflow-x-hidden relative">
               {/* 2. */}
-              <div className="w-[200%] flex items-center justify-around gap-x-5 absolute left-0 animate">
-                {/* 3 */}
-                {aggregateData.map((item) => <SliderCard {...item} key={item.Id} />)}
-                {aggregateData.map((item) => <SliderCard {...item} key={item.Id} />)}
+              <div className="w-[200%] flex items-center justify-start gap-x-5 absolute left-0 animate">
+                {aggregateData.length
+                  ? aggregateData.length < 10
+                    ? Array(
+                        Math.ceil(
+                          (10 - aggregateData.length) / aggregateData.length
+                        )
+                      )
+                        .fill(0)
+                        .slice(0, 10)
+                        .map((filler) =>
+                          aggregateData.map((item, index) => (
+                            <SliderCard {...item} key={item.Id} />
+                          ))
+                        )
+                    : aggregateData
+                        .slice(0, 10)
+                        .map((item, index) => (
+                          <SliderCard {...item} key={item.Id} />
+                        ))
+                  : Array(10)
+                      .fill(0)
+                      .map((filler, key) => <Loader key={key} />)}
               </div>
               <div className="mt-96 ml-44 pb-4 relative">
-
                 {/* <div className={`w-72 h-52 bg-white flex justify-center items-center border-2 border-black transform transition-all absolute rounded-lg ${!previousSingleData?.FileKey && "animate-pulse"}`}>
                   <UserDetectionCard FileKey={previousSingleData?.FileKey} />
 
                 </div> */}
-                {singleData &&
-                  <div className={`w-72 h-52 bg-white flex justify-center items-center border-2 border-black transform transition-all absolute left-20 rounded-lg ${!singleData?.FileKey && "animate-pulse"}`}>
+                {singleData && (
+                  <div
+                    className={`w-72 h-52 bg-white flex justify-center items-center border-2 border-black transform transition-all absolute left-20 rounded-lg ${
+                      !singleData?.FileKey && "animate-pulse"
+                    }`}
+                  >
                     <UserDetectionCard FileKey={singleData?.FileKey} />
                   </div>
-                }
+                )}
               </div>
               <div className="pr-64 pt-52">
-                {singleData && <UserTakeAlert Timestamp={singleData?.Timestamp!} PeopleName={singleData?.PeopleName} Quantity={singleData?.Quantity} />}
+                {singleData && (
+                  <UserTakeAlert
+                    Action={singleData?.Action}
+                    Timestamp={singleData?.Timestamp!}
+                    PeopleName={singleData?.PeopleName}
+                    Quantity={singleData?.Quantity}
+                  />
+                )}
               </div>
             </div>
-
           </div>
         </div>
       </div>
-    </div >
-  )
-}
+    </div>
+  );
+};
 
-export default Home
+export default Home;
