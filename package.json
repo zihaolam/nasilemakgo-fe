@@ -7,7 +7,7 @@
     "build": "next build && next export",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "aws s3 cp out s3://serverlessgo --recursive",
+    "deploy": "aws s3 sync out s3://serverlessgo --delete && aws cloudfront create-invalidation --distribution-id E31GC9PJM6WLG1 --paths '/*'",
     "bd": "yarn build && yarn deploy"
   },
   "dependencies": {
