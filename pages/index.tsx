@@ -84,6 +84,13 @@ const Home: NextPage = () => {
       .then((data) => {
         setAggregateData(data.Items);
       });
+    fetch(
+      "https://edlpdsg48a.execute-api.ap-southeast-1.amazonaws.com/prod/events?latest=true"
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setSingleData(data.Items[0]);
+      });
   }, []);
 
   return (
@@ -95,7 +102,7 @@ const Home: NextPage = () => {
       </Head>
 
       <div className="overflow-y-hidden h-screen relative">
-        <div className="flex flex-col justify-center md:flex md:justify-start">
+        <div className="flex flex-col h-full justify-center md:flex md:justify-start">
           <img
             className=" hidden md:block h-screen w-screen absolute top-0 left-0 object-cover object-right"
             src="/nasilemakhd2_edited_min.jpeg"
@@ -106,8 +113,8 @@ const Home: NextPage = () => {
             src="https://tuk-cdn.s3.amazonaws.com/can-uploader/hero_8_img-2.png"
             alt="santa"
           />
-          <div className="flex flex-col bg-gray-900 bg-opacity-50 mt-4 w-screen overflow-hidden">
-            <div className="w-[200%] h-screen overflow-x-hidden relative">
+          <div className="flex flex-col bg-gray-900 bg-opacity-50 mt-4 w-screen justify-between h-screen overflow-hidden">
+            <div className="w-[200%] flex-1 overflow-x-hidden relative">
               {/* 2. */}
               <div className="w-[200%] flex items-center justify-start gap-x-5 absolute left-0 animate">
                 {aggregateData.length
@@ -133,31 +140,28 @@ const Home: NextPage = () => {
                       .fill(0)
                       .map((filler, key) => <Loader key={key} />)}
               </div>
-              <div className="mt-96 ml-44 pb-4 relative">
-                {/* <div className={`w-72 h-52 bg-white flex justify-center items-center border-2 border-black transform transition-all absolute rounded-lg ${!previousSingleData?.FileKey && "animate-pulse"}`}>
-                  <UserDetectionCard FileKey={previousSingleData?.FileKey} />
-
-                </div> */}
-                {singleData && (
-                  <div
-                    className={`w-72 h-52 bg-white flex justify-center items-center border-2 border-black transform transition-all absolute left-20 rounded-lg ${
-                      !singleData?.FileKey && "animate-pulse"
-                    }`}
-                  >
-                    <UserDetectionCard FileKey={singleData?.FileKey} />
-                  </div>
-                )}
-              </div>
-              <div className="pr-64 pt-52">
-                {singleData && (
-                  <UserTakeAlert
-                    Action={singleData?.Action}
-                    Timestamp={singleData?.Timestamp!}
+            </div>
+            <div className="mx-4 flex flex-col space-y-3 mb-4">
+              {singleData && (
+                <div
+                  className={`w-72 h-52 bg-white flex items-center border-2 border-black transform transition-all rounded-lg ${
+                    !singleData?.FileKey && "animate-pulse"
+                  }`}
+                >
+                  <UserDetectionCard
+                    FileKey={singleData?.FileKey}
                     PeopleName={singleData?.PeopleName}
-                    Quantity={singleData?.Quantity}
                   />
-                )}
-              </div>
+                </div>
+              )}
+              {singleData && (
+                <UserTakeAlert
+                  Action={singleData?.Action}
+                  Timestamp={singleData?.Timestamp}
+                  PeopleName={singleData?.PeopleName}
+                  Quantity={singleData?.Quantity}
+                />
+              )}
             </div>
           </div>
         </div>
