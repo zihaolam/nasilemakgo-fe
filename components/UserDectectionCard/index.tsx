@@ -14,7 +14,7 @@ const UserDetectionCard: FC<UserDetectionCardProps> = ({
   return (
     <div>
       <div
-        className={`max-w-sm rounded bg-gray-300 dark:bg-gray-800 shadow ${
+        className={`rounded-lg bg-gray-300 dark:bg-gray-800 shadow ${
           !FileKey && "animate-pulse"
         }
       ${isError ? "border-red-500" : "border-green-400"}

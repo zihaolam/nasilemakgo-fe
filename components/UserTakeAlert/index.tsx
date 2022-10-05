@@ -19,10 +19,10 @@ const UserTakeAlert: FC<UserTakeAlertProps> = ({
     <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
-      viewBox="0 0 24 24"
+      viewBox=""
       strokeWidth={1.5}
       stroke="currentColor"
-      className="w-6 h-6"
+      className="h-full"
     >
       <path
         strokeLinecap="round"
@@ -33,7 +33,7 @@ const UserTakeAlert: FC<UserTakeAlertProps> = ({
   ) : (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
+      viewBox=""
       width={22}
       height={22}
       fill="currentColor"
@@ -49,18 +49,14 @@ const UserTakeAlert: FC<UserTakeAlertProps> = ({
     <div>
       <div
         id="alert"
-        className="bg-white py-4 md:py-0 dark:bg-gray-800 shadow rounded inline-flex flex-col items-center md:flex-row  justify-between relative"
+        className="bg-white py-6 dark:bg-gray-800 shadow rounded inline-flex flex-col items-center md:flex-row  justify-between relative"
       >
-        <div className="flex items-center space-x-3 md:flex-row mr-3">
-          <div className="mr-3 p-4 bg-green-400 rounded md:rounded-tr-none md:rounded-br-none text-white">
-            {logo}
-          </div>
-          <div className="h-1 w-1 bg-gray-300 dark:bg-gray-700 rounded-full mr-2 hidden xl:block" />
-          <p className="text-sm lg:text-base dark:text-gray-400 text-gray-600 sm:mb-0 mb-2 text-center sm:text-left">
-            {isError ? "Invalid User" : PeopleName} has {Action} {Quantity}
+        <div className="flex items-center space-x-10 md:flex-row mr-3 mx-4">
+          <p className="text-6xl dark:text-gray-400 text-gray-600 sm:mb-0 mb-2 text-center sm:text-left">
+            {isError ? "Unregistered User" : PeopleName} has {Action} {Quantity}
           </p>
           <div className="bg-gray-200 text-gray-900 dark:border-gray-700 h-8 px-3 md:mb-0 rounded-md flex items-center justify-center">
-            <span className="text-xs font-normal">
+            <span className="text-3xl font-normal">
               {Timestamp ? new Date(Timestamp).toLocaleString() : ""}
             </span>
           </div>
